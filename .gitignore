@@ -1,5 +1,8 @@
 /.vscode
-/include
+/include/glad
+/include/GLFW
+/include/glm
+/include/KHR
 /libs
 /obj
 /test
