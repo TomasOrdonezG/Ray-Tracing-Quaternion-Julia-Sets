@@ -1,17 +1,17 @@
 #ifndef APP_H
 #define APP_H
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <imgui/imgui.h>
-#include <imgui/imgui_impl_glfw.h>
-#include <imgui/imgui_impl_opengl3.h>
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include <glm/glm.hpp>
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
 #include <math.h>
-#include <glm/glm.hpp>
 #include "debug.h"
 #include "utils.h"
 #include "shader.h"
@@ -34,6 +34,7 @@ public:
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
 
         // Full-screen window
         GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
@@ -43,8 +44,9 @@ public:
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);  // Enable vsync
 
-        // Initialize GLAD
-        gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        // Initialize GLAD/GLEW
+        // gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        glewInit();
         
         // Enable blending
         glEnable(GL_BLEND);
@@ -97,8 +99,8 @@ public:
                 glBindTexture(GL_TEXTURE_2D, 0);
                 
                 // Display current texture on ImGui window
-                ImGui::ImageButton((void*)sceneWindow.textures[pingpong], ImVec2(sceneWindow.width, sceneWindow.height), ImVec2(0, 1), ImVec2(1, 0), 0);
-                
+                ImGui::ImageButton((ImTextureID)(intptr_t)sceneWindow.textures[pingpong], ImVec2(sceneWindow.width, sceneWindow.height), ImVec2(0, 1), ImVec2(1, 0), 0);
+
                 // Swap pingpong boolean for the next iteration
                 pingpong = !pingpong;
             }

@@ -1,46 +1,39 @@
--- Define the project name
-local projectName = "main"
-
-workspace (projectName)
+workspace "main"
     configurations { "Debug", "Release" }
-    architecture "x86"
-    startproject (projectName)
+    architecture "x86_64"
+    location "."
 
-project (projectName)
+project "main"
     kind "ConsoleApp"
     language "C++"
-    targetdir ("build/%{cfg.buildcfg}")
+    targetdir "bin/%{cfg.buildcfg}"
+    objdir "obj/%{cfg.buildcfg}"
 
-    files {
-        "src/**.h", 
-        "src/**.cpp",
-        "src/shaders/RayTracing.frag"
+    files { "src/**.cpp", "src/**.h" }
+    includedirs { "include", "/usr/include" }
+    libdirs { "/usr/lib" }
+
+    -- Link libraries
+    links {
+        "glfw",
+        "GLEW",
+        "GL"
     }
 
-    includedirs {
-        "include",
-        "include/GLFW",
-        "include/glad",
-        "include/KHR",
-        "include/imgui",
-        "include/glm",
-    }
-
-    libdirs { "libs", "libs/GLFW" }
-
-    links { "mingw32", "glfw3", "m", "opengl32", "libs/glad/glad.o" }
-
+    -- Compiler and linker settings
+    filter "system:linux"
+        buildoptions { "-std=c++17" }
+        links { "GL", "glfw", "GLEW" }
+    
     filter "configurations:Debug"
         defines { "DEBUG" }
         symbols "On"
-        buildoptions { "-g" }
-        
-        if os.host() == "windows" then
-            postbuildcommands { "$(TARGETDIR)/" .. projectName .. ".exe" }
-        else
-            postbuildcommands { "$(TARGETDIR)/" .. projectName }
-        end
+
+        postbuildcommands {
+            "%{cfg.targetdir}/main 2> /dev/null"
+        }
 
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
+

@@ -19,12 +19,12 @@ endif
 # #############################################
 
 RESCOMP = windres
-INCLUDES += -Iinclude -Iinclude/GLFW -Iinclude/glad -Iinclude/KHR -Iinclude/imgui -Iinclude/glm
+INCLUDES += -Iinclude -I/usr/include
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-LIBS += libs/glad/glad.o -lmingw32 -lglfw3 -lm -lopengl32
-LDDEPS += src/shaders/*
+LIBS += -lGL -lglfw -lGLEW
+LDDEPS +=
 LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
 endef
@@ -32,26 +32,26 @@ define PRELINKCMDS
 endef
 
 ifeq ($(config),debug)
-TARGETDIR = build/Debug
-TARGET = $(TARGETDIR)/main.exe
+TARGETDIR = bin/Debug
+TARGET = $(TARGETDIR)/main
 OBJDIR = obj/Debug
 DEFINES += -DDEBUG
-ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -g -g
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -g -g
-ALL_LDFLAGS += $(LDFLAGS) -Llibs -Llibs/GLFW -Llibs/glad -L/usr/lib32 -m32
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
+ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib -L/usr/lib64 -m64
 define POSTBUILDCMDS
 	@echo Running postbuild commands
-	$(TARGETDIR)/main.exe
+	bin/Debug/main 2> /dev/null
 endef
 
 else ifeq ($(config),release)
-TARGETDIR = build/Release
-TARGET = $(TARGETDIR)/main.exe
+TARGETDIR = bin/Release
+TARGET = $(TARGETDIR)/main
 OBJDIR = obj/Release
 DEFINES += -DNDEBUG
-ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -O2
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -O2
-ALL_LDFLAGS += $(LDFLAGS) -Llibs -Llibs/GLFW -Llibs/glad -L/usr/lib32 -m32 -s
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++17
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++17
+ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib -L/usr/lib64 -m64 -s
 define POSTBUILDCMDS
 endef
 
