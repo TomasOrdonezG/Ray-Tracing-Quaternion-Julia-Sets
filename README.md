@@ -4,6 +4,10 @@
 <img src="assets/asset2.png" />
 <img src="assets/asset3.png" />
 
+### Reference
+
+Algorithm implemented from https://www.cs.cmu.edu/~kmcrane/Projects/QuaternionJulia/paper.pdf
+
 ### Building the makefile
 
 -   Run `premake5 gmake2` on the root directory to create the Makefile for the project.
